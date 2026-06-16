@@ -12,6 +12,14 @@ remappings = [
     "forge-std/=lib/forge-std/src/",
 ]
 
+[fuzz]
+runs = 1024
+
+[invariant]
+runs = 256
+depth = 64
+fail_on_revert = false
+
 # Pharos Testnet (chain id 688688)
 [rpc_endpoints]
 pharos_testnet = "https://testnet.dplabs-internal.com"

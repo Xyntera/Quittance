@@ -80,3 +80,39 @@ node examples/agent/quittance-agent.mjs "pay 0.004 PHRS to 0x0000000000000000000
 - **Token safety** — low-level transfer/transferFrom tolerant of non-standard (no-return) ERC20s;
   return data checked.
 - **Funds isolation** — each payer can only ever spend/withdraw their own deposited balance.
+
+## 5. Stress testing & scalability
+
+**Invariant testing** (`test/QuittanceInvariant.t.sol`) — 256 runs × depth 64 =
+**16,384 randomly-sequenced deposit/withdraw/redeem calls, 0 reverts**, with two properties
+asserted after every step:
+- `invariant_solvency` — contract native balance **always equals** the sum of every payer's
+  internal balance (funds never created, lost, or stuck).
+- `invariant_conservation` — `deposited == withdrawn + settled + still-held`.
+
+**Fuzzing** — `testFuzz_Redeem` at **1,024 runs**; all revert/expiry/replay/tamper paths covered.
+
+**Batch-settlement scaling** (`test/QuittanceScale.t.sol`) — `redeemMany` is linear with a flat
+amortized cost:
+
+| Batch size | Total gas | Gas / voucher |
+|-----------:|----------:|--------------:|
+| 1   | 73,522     | 73,522 |
+| 25  | 1,068,395  | 42,735 |
+| 50  | 2,107,099  | 42,141 |
+| 100 | 4,191,617  | 41,916 |
+| 250 | 10,503,049 | 42,012 |
+
+A single `redeem` is ~100k gas; batching amortizes to **~42k gas/voucher**. At Pharos's target
+~2 Gigagas/s that is on the order of **~47,000 settlements/sec** (illustrative ceiling); voucher
+*issuance* is off-chain and effectively unbounded above that.
+
+**Live batch** (`script/quittance/StressRedeemMany.s.sol`) — **100 vouchers settled in ONE
+`redeemMany` transaction** on Pharos Atlantic Testnet:
+- tx `0x3c05b7190bb1f8d86b7bc5798d06f3c827ce064e4778497abd786d22f45c6d3f` — gas used `4,398,434`
+  (~44k/voucher, matching the local estimate); payee credited exactly 100×.
+
+**Scaling roadmap:** today each redeemed voucher consumes one storage slot
+(`nonceUsed[payer][nonce]`). For streaming / millions of micropayments, the production
+evolution is a netting/channel model — one increasing "total-spent" counter per `(payer → payee)`
+and a single `redeem` of the cumulative amount — making **N payments O(1) storage and one tx**.
