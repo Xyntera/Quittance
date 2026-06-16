@@ -1,0 +1,21 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+test = "test"
+script = "script"
+solc_version = "0.8.24"
+optimizer = true
+optimizer_runs = 200
+evm_version = "paris"
+remappings = [
+    "forge-std/=lib/forge-std/src/",
+]
+
+# Pharos Testnet (chain id 688688)
+[rpc_endpoints]
+pharos_testnet = "https://testnet.dplabs-internal.com"
+
+[etherscan]
+# Pharos uses a SocialScan-backed verification endpoint (Blockscout-compatible).
+pharos_testnet = { key = "${PHAROS_SCAN_API_KEY}", url = "https://api.socialscan.io/pharos-testnet/v1/explorer/command_api/contract", chain = 688688 }

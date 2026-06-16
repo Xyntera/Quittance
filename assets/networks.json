@@ -1,0 +1,20 @@
+{
+  "pharos_testnet": {
+    "name": "Pharos Testnet",
+    "chainId": 688688,
+    "rpcUrl": "https://testnet.dplabs-internal.com",
+    "explorerUrl": "https://testnet.pharosscan.xyz",
+    "verifierUrl": "https://api.socialscan.io/pharos-testnet/v1/explorer/command_api/contract",
+    "nativeCurrency": { "name": "Pharos", "symbol": "PHRS", "decimals": 18 },
+    "faucet": "https://testnet.pharosnetwork.xyz"
+  },
+  "pharos_atlantic_testnet": {
+    "name": "Pharos Atlantic Testnet",
+    "chainId": 688689,
+    "rpcUrl": "https://atlantic.dplabs-internal.com",
+    "explorerUrl": "https://atlantic.pharosscan.xyz",
+    "verifierUrl": "https://api.socialscan.io/pharos-atlantic-testnet/v1/explorer/command_api/contract",
+    "nativeCurrency": { "name": "Pharos", "symbol": "PHRS", "decimals": 18 },
+    "faucet": "https://testnet.pharosnetwork.xyz"
+  }
+}

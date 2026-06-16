@@ -1,0 +1,18 @@
+# Foundry
+out/
+cache/
+broadcast/
+
+# Secrets — NEVER commit private keys
+.env
+.env.local
+*.key
+
+# Dependencies. forge-std is tracked as a git submodule (a lightweight gitlink),
+# so run `git submodule update --init` (or `forge install`) after cloning.
+node_modules/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
