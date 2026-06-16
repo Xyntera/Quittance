@@ -38,6 +38,34 @@ assets/tokens.json             # token registry (PHRS / stablecoin)
 assets/templates/payrail.ts    # off-chain interaction template (viem)
 script/payrail/DeployPayRail.s.sol
 test/PayRail.t.sol             # 14 tests
+examples/agent/payrail-agent.mjs   # runnable agent-invocation harness
+VALIDATION.md                  # Skill Engine compliance + live evidence
+```
+
+## Validation & live agent invocation
+
+`VALIDATION.md` checks PayRail against the Skill Engine format and publishing checklist.
+`examples/agent/payrail-agent.mjs` then **proves the skill is agent-invocable**: it follows the
+exact Skill Engine runtime flow — read `SKILL.md` → match the Capability Index → read
+`references/payrail.md` → read `networks.json` → run pre-checks → execute `cast` → parse output —
+and was run **live** against the deployment:
+
+```text
+User: pay 0.004 PHRS to 0x…C0ffee00 for invoice-23078
+[agent 1] read SKILL.md — Capability Index (9 capabilities)
+[agent 2] match intent → capability: pay
+[agent 3] reference: references/payrail.md#redeem (full voucher flow)
+[agent 4] signing the EIP-712 voucher off-chain (no gas)
+[agent 5] verify() → true "ok"
+[agent 6] redeem() — settling on-chain
+[agent 7] parsed: settled 0.004 PHRS → 0x…C0ffee00; nonceUsed=true; tx 0x2954…f509
+✓ done
+```
+
+```bash
+export PRIVATE_KEY=0xYOUR_TESTNET_KEY
+node examples/agent/payrail-agent.mjs "deposit 0.03 PHRS into PayRail"
+node examples/agent/payrail-agent.mjs "pay 0.004 PHRS to 0x00000000000000000000000000000000C0ffee00 for invoice-1"
 ```
 
 ## Payment flow

@@ -76,7 +76,7 @@ Emits `Deposited(payer, token, amount)`. Confirm with
 `cast call $RAIL "balanceOf(address,address)(uint256)" $ME $TOKEN --rpc-url $RPC`.
 
 ### Error Handling
-| Revert string | Cause | Suggested action |
+| Error Signature | Cause | Suggested action |
 |---------------|-------|------------------|
 | `PayRail: use depositNative for native` | called `deposit` with `token = 0x0` | Use `depositNative`. |
 | `PayRail: ERC20 transferFrom failed` | missing approval / balance | Approve and fund first. |
@@ -160,7 +160,7 @@ Emits `PaymentSettled(payer, payee, token, amount, nonce)`. Confirm with
 `cast call $RAIL "nonceUsed(address,bytes32)(bool)" $PAYER $NONCE --rpc-url $RPC`.
 
 ### Error Handling
-| Revert string | Cause | Suggested action |
+| Error Signature | Cause | Suggested action |
 |---------------|-------|------------------|
 | `PayRail: nonce already used` | voucher already redeemed | Issue a new voucher with a fresh nonce. |
 | `PayRail: authorization expired` | past `validBefore` | Re-issue with a later expiry. |
@@ -189,7 +189,7 @@ cast send $RAIL "withdraw(address,uint256)" $ZERO $(cast to-wei 0.5 ether) \
 ```
 Refunds your own unspent PayRail balance. Emits `Withdrawn(payer, token, amount)`.
 
-| Revert string | Cause | Suggested action |
+| Error Signature | Cause | Suggested action |
 |---------------|-------|------------------|
 | `PayRail: insufficient balance` | withdrawing more than deposited-minus-spent | Lower the amount. |
 
