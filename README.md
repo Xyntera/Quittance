@@ -19,12 +19,29 @@ payments, the one Pharos was literally built for ("on-chain payments for the AI 
 | Judging criterion | How Quittance delivers |
 |-------------------|----------------------|
 | **Alignment with the Pharos vision** | Pharos = on-chain payments + RealFi for agents. Quittance *is* the settlement rail. |
-| **Originality** | Implements the [x402](https://www.x402.org) thesis (Coinbase/Visa/Google; 119M+ txs) natively on Pharos — vouchers + on-chain settlement — not a token/airdrop clone. |
+| **Originality** | An x402-*aligned* on-chain settlement skill — implements the model Coinbase/Visa/Google back (119M+ txs) and adds what EVM-x402 lacks: native-coin + any-ERC20, batched settlement, prepaid budgets. Not a token/airdrop clone. |
 | **Practical use case for agents** | Gasless-for-payer, per-call micropayments between agents and to paid APIs; relayer-settled. |
 | **Reusability & composability** | A dependency, not an app: any Agent that pays or gets paid uses `deposit → sign → verify → redeem`. |
 | **Technical quality** | EIP-712 + EIP-1271 (smart-account agents), malleability-resistant ECDSA, single-use nonces, reentrancy-guarded, **no admin keys**, non-standard-ERC20 safe. 14 passing tests incl. fuzzing. |
 | **Security (CertiK Skill Scanner is the official standard)** | Zero privileged functions = zero admin-key risk; checks-effects-interactions on every fund path. |
 | **Docs & UX** | Full Skill Engine integration: `SKILL.md` capability index + a complete `references/quittance.md` with `cast`/`forge` templates, parameter & error tables, and agent guidelines. |
+
+## Quittance vs. vanilla x402
+
+Quittance is **x402-aligned, not a fork.** It implements the same *"sign off-chain, settle
+on-chain"* model x402 popularized, and fills the gaps EVM-x402 has on a young chain — it can even
+serve as the on-chain settlement backend a Pharos x402 facilitator calls.
+
+| Capability | Vanilla x402 (EIP-3009) | **Quittance** |
+|---|---|---|
+| Reusable on-chain contract | ✗ — an HTTP spec + facilitator service | ✓ a deployed Skill any agent calls |
+| Token support | needs EIP-3009 tokens (e.g. USDC) | **native PHRS + any ERC-20** |
+| Native coin payments | ✗ | ✓ |
+| Gasless for the payer | ✓ | ✓ |
+| Batched settlement | per-authorization | ✓ `redeemMany` — **100 settlements/tx proven live** |
+| Prepaid, withdrawable budget | ✗ (pulls straight from wallet) | ✓ capped per-payer balance (solvency-invariant proven) |
+| Smart-account payers (EIP-1271) | varies | ✓ |
+| Admin keys | n/a | **none** |
 
 ## How it fits the Pharos Skill Engine
 

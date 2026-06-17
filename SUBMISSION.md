@@ -1,7 +1,7 @@
 # Quittance — DoraHacks Submission
 
 > Pharos Skill-to-Agent Dual Cascade Hackathon · Phase 1 (Skill Hackathon)
-> Repo: https://github.com/Xyntera/jotbox · License: MIT
+> Repo: https://github.com/Xyntera/Quittance · License: MIT
 
 ## Tagline
 **The settlement rail for the agent economy** — prepaid, gasless, programmable micropayments
@@ -26,6 +26,24 @@ fractions of a cent, thousands of times a day. Today they can't:
 
 It's a **dependency, not an app**: any Phase-2 Agent that pays or gets paid calls
 `deposit → sign → verify → redeem`.
+
+## x402-aligned — and what it adds
+Quittance is **not a fork of x402**; it's the on-chain settlement skill that makes x402-style
+payments work on Pharos. x402 is an HTTP spec whose EVM "exact" scheme relies on the token's
+**EIP-3009** `transferWithAuthorization` plus an off-chain facilitator. Quittance implements the
+same *sign-off-chain / settle-on-chain* model as a reusable contract, and adds what EVM-x402
+can't do natively. (It can also serve as the settlement backend a Pharos x402 facilitator calls.)
+
+| Capability | Vanilla x402 (EIP-3009) | **Quittance** |
+|---|---|---|
+| Reusable on-chain contract | ✗ — HTTP spec + facilitator | ✓ a deployed Skill any agent calls |
+| Token support | needs EIP-3009 tokens (USDC) | **native PHRS + any ERC-20** |
+| Native coin payments | ✗ | ✓ |
+| Gasless for the payer | ✓ | ✓ |
+| Batched settlement | per-authorization | ✓ `redeemMany` — **100/tx proven live** |
+| Prepaid, withdrawable budget | ✗ (pulls from wallet) | ✓ capped per-payer balance |
+| Smart-account payers (EIP-1271) | varies | ✓ |
+| Admin keys | n/a | **none** |
 
 ## What we built
 - **`Quittance.sol`** — single-file, dependency-free settlement contract. Native + ERC20,
@@ -56,7 +74,7 @@ It's a **dependency, not an app**: any Phase-2 Agent that pays or gets paid call
 | Criterion | Evidence |
 |---|---|
 | **Alignment with the Pharos vision** | Pharos = on-chain payments for the AI agent economy. Quittance *is* the settlement rail. |
-| **Originality** | The x402 thesis (Coinbase/Visa/Google; 119M+ txs) implemented natively on Pharos — not a token/airdrop clone. |
+| **Originality** | x402-*aligned* (Coinbase/Visa/Google; 119M+ txs) but adds native-coin + any-ERC20, batched settlement, and prepaid budgets EVM-x402 lacks — not a token/airdrop clone. |
 | **Practical use for agents** | Gasless-for-payer, sub-cent, per-call payments; relayer-settled; works for EOAs and smart-account agents. |
 | **Reusability & composability** | A backbone primitive every paying/earning agent reuses. |
 | **Technical quality & completeness** | EIP-712 + EIP-1271, malleability-resistant ECDSA, reentrancy guard, no admin keys; 14 tests + invariants + fuzz + live stress. |
@@ -75,7 +93,7 @@ API/data calls and gets paid per request via Quittance vouchers (HTTP 402 → vo
 serve → batched `redeem`). See `docs/PHASE2_PAYWALLED_DATA_AGENT.md`.
 
 ## Links
-- Repo (main): https://github.com/Xyntera/jotbox
+- Repo (main): https://github.com/Xyntera/Quittance
 - Contract: https://atlantic.pharosscan.xyz/address/0xd872C6F530c2E1055a522B1978CA99FE65B99F56
 - Skill entry point: [`SKILL.md`](SKILL.md) · Reference: [`references/quittance.md`](references/quittance.md)
 - Validation & evidence: [`VALIDATION.md`](VALIDATION.md)

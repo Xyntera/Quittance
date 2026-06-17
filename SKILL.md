@@ -23,6 +23,10 @@ off-chain, settle on-chain* — for the Pharos AI Agent economy. It turns "pay a
 a paid API per call" into one safe, reusable settlement primitive any Phase-2 Agent can
 depend on.
 
+It is **x402-aligned, not a fork**: it implements x402's model and adds what EVM-x402 lacks —
+**native-coin + any-ERC20** support, **batched settlement** (100/tx proven live), and **prepaid,
+withdrawable** spend budgets — so it works on Pharos today and can back a Pharos x402 facilitator.
+
 **Flow:** `deposit` (payer funds) → sign an **EIP-712 voucher** off-chain → `verify` (server
 pre-check) → `redeem` (anyone relays; payee gets paid). Single-use nonces prevent replay.
 
